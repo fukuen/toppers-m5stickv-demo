@@ -286,26 +286,46 @@ void main_task(intptr_t exinf)
 	if(ov7740_sensor_ov_detect(hcmr) == E_OK){
 		syslog_0(LOG_NOTICE, "find ov sensor !");
 	}
-	else if(ov7740_sensro_gc_detect(hcmr) == E_OK){
-		syslog_0(LOG_NOTICE, "find gc3028 !");
+	else if(ov7740_sensor_gc_detect(hcmr) == E_OK){
+		syslog_0(LOG_NOTICE, "find gc0328 !");
 	}
-	if(ov7740_reset(hcmr) != E_OK){
-		syslog_0(LOG_ERROR, "ov7740 reset error !");
-		slp_tsk();
-	}
-    if(ov7740_set_pixformat(hcmr) != E_OK){
-		syslog_0(LOG_ERROR, "set pixformat error !");
-        slp_tsk();
-	}
-    if(ov7740_set_framesize(hcmr) != E_OK){
-		syslog_0(LOG_ERROR, "set frame size error !");
-        slp_tsk();
-	}
-#ifdef MAIXAMIGO
-	ov7740_choice(hcmr, 1);
-#endif
-	ov7740_setInvert(hcmr, true);
 	syslog_1(LOG_NOTICE, "OV7740 id(%d)", ov7740_id(hcmr));
+	if(ov7740_id(hcmr)==0x77){
+		if(ov7740_reset(hcmr) != E_OK){
+			syslog_0(LOG_ERROR, "ov7740 reset error !");
+			slp_tsk();
+		}
+		if(ov7740_set_pixformat(hcmr) != E_OK){
+			syslog_0(LOG_ERROR, "set pixformat error !");
+			slp_tsk();
+		}
+		if(ov7740_set_framesize(hcmr) != E_OK){
+			syslog_0(LOG_ERROR, "set frame size error !");
+			slp_tsk();
+		}
+#ifdef MAIXAMIGO
+		ov7740_choice(hcmr, 1);
+#endif
+		ov7740_setInvert(hcmr, true);
+	}
+	else
+	{
+		if(gc0328_reset(hcmr) != E_OK){
+			syslog_0(LOG_ERROR, "gc0328 reset error !");
+			slp_tsk();
+		}
+		if(gc0328_set_pixformat(hcmr) != E_OK){
+			syslog_0(LOG_ERROR, "set pixformat error !");
+			slp_tsk();
+		}
+		if(gc0328_set_framesize(hcmr) != E_OK){
+			syslog_0(LOG_ERROR, "set frame size error !");
+			slp_tsk();
+		}
+#ifdef MAIXAMIGO
+		ov7740_choice(hcmr, 2);
+#endif
+	}
 
 	Init.WorkMode     = SPI_WORK_MODE_0;
 #if defined(MAIXAMIGO) || defined(MAIXCUBE)
